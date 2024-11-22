@@ -1,0 +1,250 @@
+#:kivy 1.0
+
+<FormularzKlienta>:
+    orientation: 'vertical'
+    padding: '20dp'
+    spacing: '5dp'
+    canvas.before:
+        Color:
+            rgba: 0.92, 0.92, 0.92, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    Label:
+        text: 'Generator Umów'
+        font_size: '24sp'
+        size_hint_y: None
+        height: '50dp'
+        color: 0.2, 0.2, 0.2, 1
+        bold: True
+
+    ScrollView:
+        size_hint_y: 0.9
+        do_scroll_x: False
+        
+        GridLayout:
+            cols: 2
+            spacing: '8dp'
+            size_hint_y: None
+            height: self.minimum_height
+            padding: '0dp', '10dp'
+            
+            # Dane Zleceniodawcy
+            Label:
+                text: 'Dane Zleceniodawcy:'
+                size_hint_y: None
+                height: '40dp'
+                bold: True
+                color: 0.2, 0.2, 0.2, 1
+                font_size: '16sp'
+            Label:
+                size_hint_y: None
+                height: '40dp'
+
+            Label:
+                text: 'Imię i Nazwisko:'
+                size_hint_y: None
+                height: '35dp'
+                color: 0.2, 0.2, 0.2, 1
+                font_size: '16sp'
+            TextInput:
+                id: imie_nazwisko_zleceniodawcy
+                multiline: False
+                size_hint_y: None
+                height: '40dp'
+                font_size: '16sp'
+                padding: ['10dp', (self.height - self.line_height) / 2]
+                
+            Label:
+                text: 'PESEL:'
+                size_hint_y: None
+                height: '35dp'
+                color: 0.2, 0.2, 0.2, 1
+                font_size: '16sp'
+            TextInput:
+                id: pesel_zleceniodawcy
+                multiline: False
+                size_hint_y: None
+                height: '40dp'
+                font_size: '16sp'
+                padding: ['10dp', (self.height - self.line_height) / 2]
+
+            Label:
+                text: 'Numer konta:'
+                size_hint_y: None
+                height: '35dp'
+                color: 0.2, 0.2, 0.2, 1
+                font_size: '16sp'
+            TextInput:
+                id: numer_konta_zleceniodawcy
+                multiline: False
+                size_hint_y: None
+                height: '40dp'
+                font_size: '16sp'
+                padding: ['10dp', (self.height - self.line_height) / 2]
+                
+            # Separator
+            Widget:
+                size_hint_y: None
+                height: '15dp'
+            Widget:
+                size_hint_y: None
+                height: '15dp'
+                
+            # Dane Pacjenta
+            Label:
+                text: 'Dane Pacjenta:'
+                size_hint_y: None
+                height: '40dp'
+                bold: True
+                color: 0.2, 0.2, 0.2, 1
+                font_size: '16sp'
+            Label:
+                size_hint_y: None
+                height: '40dp'
+
+            Label:
+                text: 'Imię i Nazwisko:'
+                size_hint_y: None
+                height: '35dp'
+                color: 0.2, 0.2, 0.2, 1
+                font_size: '16sp'
+            TextInput:
+                id: imie_nazwisko_pacjenta
+                multiline: False
+                size_hint_y: None
+                height: '40dp'
+                font_size: '16sp'
+                padding: ['10dp', (self.height - self.line_height) / 2]
+                
+            Label:
+                text: 'PESEL:'
+                size_hint_y: None
+                height: '35dp'
+                color: 0.2, 0.2, 0.2, 1
+                font_size: '16sp'
+            TextInput:
+                id: pesel_pacjenta
+                multiline: False
+                size_hint_y: None
+                height: '40dp'
+                font_size: '16sp'
+                padding: ['10dp', (self.height - self.line_height) / 2]
+                
+            # Separator
+            Widget:
+                size_hint_y: None
+                height: '15dp'
+            Widget:
+                size_hint_y: None
+                height: '15dp'
+                
+            # Pozostałe dane
+            Label:
+                text: 'Adres:'
+                size_hint_y: None
+                height: '35dp'
+                color: 0.2, 0.2, 0.2, 1
+                font_size: '16sp'
+            TextInput:
+                id: ulica
+                multiline: False
+                size_hint_y: None
+                height: '40dp'
+                font_size: '16sp'
+                padding: ['10dp', (self.height - self.line_height) / 2]
+                
+            Label:
+                text: 'Kod Pocztowy:'
+                size_hint_y: None
+                height: '35dp'
+                color: 0.2, 0.2, 0.2, 1
+                font_size: '16sp'
+            TextInput:
+                id: kod_pocztowy
+                multiline: False
+                size_hint_y: None
+                height: '40dp'
+                font_size: '16sp'
+                padding: ['10dp', (self.height - self.line_height) / 2]
+
+            # Separator
+            Widget:
+                size_hint_y: None
+                height: '15dp'
+            Widget:
+                size_hint_y: None
+                height: '15dp'
+                
+            # Daty
+            Label:
+                text: 'Daty:'
+                size_hint_y: None
+                height: '40dp'
+                bold: True
+                color: 0.2, 0.2, 0.2, 1
+                font_size: '16sp'
+            Label:
+                size_hint_y: None
+                height: '40dp'
+
+            Label:
+                text: 'Data zawarcia umowy:'
+                size_hint_y: None
+                height: '35dp'
+                color: 0.2, 0.2, 0.2, 1
+                font_size: '16sp'
+            TextInput:
+                id: data_zawarcia_umowy
+                multiline: False
+                size_hint_y: None
+                height: '40dp'
+                font_size: '16sp'
+                padding: ['10dp', (self.height - self.line_height) / 2]
+                text: root.dzisiejsza_data
+
+            Label:
+                text: 'Data przyjęcia pacjenta:'
+                size_hint_y: None
+                height: '35dp'
+                color: 0.2, 0.2, 0.2, 1
+                font_size: '16sp'
+            TextInput:
+                id: data_przyjecia_pacjenta
+                multiline: False
+                size_hint_y: None
+                height: '40dp'
+                font_size: '16sp'
+                padding: ['10dp', (self.height - self.line_height) / 2]
+                text: root.dzisiejsza_data
+
+    # Separator przed przyciskiem
+    Widget:
+        size_hint_y: None
+        height: '30dp'
+
+    # Przycisk
+    Button:
+        text: 'Generuj dokumenty'
+        size_hint: (None, None)
+        size: '200dp', '50dp'
+        pos_hint: {'center_x': 0.5}
+        background_color: 0.2, 0.6, 1, 1
+        font_size: '18sp'
+        on_release: root.generuj_dokumenty(self)
+        canvas.before:
+            Color:
+                rgba: 0.2, 0.6, 1, 1
+            RoundedRectangle:
+                pos: self.pos
+                size: self.size
+                radius: [10,]
+
+    # Miejsce na komunikaty
+    Label:
+        id: message_label
+        size_hint_y: None
+        height: '40dp'
+        color: 0.2, 0.2, 0.2, 1
+        font_size: '16sp'
