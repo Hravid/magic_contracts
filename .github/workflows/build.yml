@@ -36,8 +36,11 @@ jobs:
         pip install python-docx docxtpl
     
     - name: Build EXE
+      env:
+        CI: 1
+        KIVY_NO_ARGS: 1
       run: |
-        pyinstaller --name MagicContracts --windowed --window-disable-gl --icon=assets/icon.ico --add-data "src/formularz.kv;." --add-data "assets;assets/" src/main.py
+        pyinstaller --name MagicContracts --windowed --icon=assets/icon.ico --add-data "src/formularz.kv;." --add-data "assets;assets/" src/main.py
 
     - name: Create Release
       uses: softprops/action-gh-release@v1
