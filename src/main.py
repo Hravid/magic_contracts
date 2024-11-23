@@ -15,6 +15,8 @@ from kivy.uix.scrollview import ScrollView
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.textinput import TextInput
 from kivy.graphics import Color, Rectangle
+from kivy.core.clipboard import Clipboard
+from kivy.graphics.vertex_instructions import RoundedRectangle
 
 def resource_path(relative_path):
     try:
@@ -340,85 +342,149 @@ class FormularzKlienta(BoxLayout):
 
     def pokaz_instrukcje(self):
         # Kolory dla popupu - jasna kolorystyka
-        popup_bg_color = (1, 1, 1, 1)               # Białe tło
-        input_bg_color = (0.95, 0.95, 0.95, 1)      # Bardzo jasne tło dla inputów
-        text_color = (0.2, 0.2, 0.2, 1)             # Ciemny tekst
-        accent_color = (0.2, 0.4, 0.8, 1)           # Niebieski akcent
-
-        content = BoxLayout(orientation='vertical', spacing='10dp', padding='20dp')
+        background_color = (0.95, 0.95, 0.95, 1)  # Jasne tło
+        button_color = (0.98, 0.98, 0.98, 1)      # Jeszcze jaśniejsze tło dla przycisków
+        text_color = (0.2, 0.2, 0.2, 1)           # Ciemny tekst
+        accent_color = (0.2, 0.4, 0.8, 1)         # Akcent niebieski
         
+        content = BoxLayout(
+            orientation='vertical', 
+            spacing='10dp', 
+            padding='20dp'
+        )
+        
+        # Dodajemy tło dla BoxLayout przez canvas
         with content.canvas.before:
-            Color(1, 1, 1, 1)  # Białe tło
+            Color(*background_color)
             Rectangle(pos=content.pos, size=content.size)
-            
-        scroll = ScrollView(size_hint=(1, 1))
-        variables_grid = GridLayout(cols=1, spacing='5dp', size_hint_y=None)
+        content.bind(pos=self._update_rect, size=self._update_rect)
+        
+        # Dodaj label z instrukcją
+        header = Label(
+            text='Kliknij na zmienną, aby ją skopiować',
+            size_hint_y=None,
+            height='30dp',
+            color=text_color
+        )
+        content.add_widget(header)
+        
+        scroll = ScrollView(
+            size_hint=(1, 1),
+            bar_color=accent_color,
+            bar_width='2dp'
+        )
+        
+        variables_grid = GridLayout(
+            cols=1, 
+            spacing='5dp', 
+            size_hint_y=None,
+            padding='5dp'
+        )
         variables_grid.bind(minimum_height=variables_grid.setter('height'))
         
         variables = [
-            '{{imie_nazwisko_zleceniodawcy}}',
-            '{{pesel_zleceniodawcy}}',
-            '{{ulica}}',
-            '{{kod_pocztowy}}',
-            '{{data_zawarcia_umowy}}',
-            '{{data_przyjecia_pacjenta}}',
-            '{{data_zakonczenia_umowy}}',
-            '{{imie_nazwisko_pacjenta}}',
-            '{{pesel_pacjenta}}',
-            '{{numer_konta_zleceniodawcy}}',
-            '{{telefon_zleceniodawcy}}',
-            '{{email_zleceniodawcy}}',
-            '{{cena}}',
-            '{{cena_slownie}}',
-            '{{aneks}}',
-            '{{pelnomocnik}}',
-            '{{pelnomocnik_z_dnia}}'
+            ('Imię i nazwisko zleceniodawcy', '{{imie_nazwisko_zleceniodawcy}}'),
+            ('PESEL zleceniodawcy', '{{pesel_zleceniodawcy}}'),
+            ('Ulica', '{{ulica}}'),
+            ('Kod pocztowy', '{{kod_pocztowy}}'),
+            ('Data zawarcia umowy', '{{data_zawarcia_umowy}}'),
+            ('Data przyjęcia pacjenta', '{{data_przyjecia_pacjenta}}'),
+            ('Data zakończenia umowy', '{{data_zakonczenia_umowy}}'),
+            ('Imię i nazwisko pacjenta', '{{imie_nazwisko_pacjenta}}'),
+            ('PESEL pacjenta', '{{pesel_pacjenta}}'),
+            ('Numer konta', '{{numer_konta_zleceniodawcy}}'),
+            ('Telefon', '{{telefon_zleceniodawcy}}'),
+            ('Email', '{{email_zleceniodawcy}}'),
+            ('Cena', '{{cena}}'),
+            ('Cena słownie', '{{cena_slownie}}'),
+            ('Aneks', '{{aneks}}'),
+            ('Pełnomocnik', '{{pelnomocnik}}'),
+            ('Pełnomocnik z dnia', '{{pelnomocnik_z_dnia}}')
         ]
-        
-        for var in variables:
-            text_input = TextInput(
-                text=var,
+
+        for label_text, var in variables:
+            btn = Button(
+                text=f'{label_text}: {var}',
                 size_hint_y=None,
-                height='35dp',
-                readonly=True,
-                multiline=False,
-                background_color=input_bg_color,
-                foreground_color=text_color,
-                cursor_color=text_color,
-                padding=('10dp', '5dp'),
+                height='40dp',
+                background_normal='',
+                background_color=button_color,
+                color=text_color,
                 font_size='14sp',
-                halign='center'
+                on_release=lambda x, v=var: self.kopiuj_do_schowka(v)
             )
-            variables_grid.add_widget(text_input)
-        
+            variables_grid.add_widget(btn)
+
         scroll.add_widget(variables_grid)
-        
-        close_button = Button(
-            text='Zamknij',
-            size_hint_y=None,
-            height='40dp',
-            background_color=accent_color,
-            color=(1, 1, 1, 1)
-        )
-        
         content.add_widget(scroll)
-        content.add_widget(close_button)
-        
+
         popup = Popup(
-            title='Zmienne w szablonie',
+            title='Zmienne do szablonu',
             content=content,
-            size_hint=(None, None),
-            size=('400dp', '500dp'),
-            background='',  # Usuwamy domyślne tło
-            background_color=(
-                popup_bg_color[0], popup_bg_color[1], popup_bg_color[2], popup_bg_color[3]
-            ),
+            size_hint=(0.8, 0.9),
             title_color=text_color,
-            separator_color=accent_color
+            separator_color=accent_color,
+            background='',
+            background_color=background_color
+        )
+        popup.open()
+
+    def _update_rect(self, instance, value):
+        instance.canvas.before.clear()
+        with instance.canvas.before:
+            Color(0.95, 0.95, 0.95, 1)
+            Rectangle(pos=instance.pos, size=instance.size)
+
+    def kopiuj_do_schowka(self, text):
+        Clipboard.copy(text)
+        
+        # Kolory spójne z resztą aplikacji
+        background_color = (0.95, 0.95, 0.95, 1)  # Jasne tło
+        text_color = (0.2, 0.2, 0.2, 1)           # Ciemny tekst
+        
+        # Tworzymy mały, elegancki toast
+        toast_content = BoxLayout(padding='10dp')
+        
+        label = Label(
+            text='✓ Skopiowano do schowka',
+            color=text_color,
+            font_size='14sp',
+            bold=True
+        )
+        toast_content.add_widget(label)
+        
+        toast = Popup(
+            title='',
+            content=toast_content,
+            size_hint=(None, None),
+            size=('220dp', '40dp'),
+            background='',  # Usuwamy domyślne tło
+            background_color=background_color,
+            border=(0, 0, 0, 0),  # Usuwamy obramowanie
+            separator_height=0,  # Usuwamy separator
+            auto_dismiss=True
         )
         
-        close_button.bind(on_release=popup.dismiss)
-        popup.open()
+        # Dodajemy delikatne cienie i zaokrąglone rogi
+        with toast.canvas.before:
+            Color(0.9, 0.9, 0.9, 1)  # Kolor cienia
+            RoundedRectangle(
+                pos=(toast.x + 2, toast.y - 2),
+                size=toast.size,
+                radius=[5,]
+            )
+            Color(*background_color)
+            RoundedRectangle(
+                pos=toast.pos,
+                size=toast.size,
+                radius=[5,]
+            )
+        
+        # Pozycjonujemy toast na dole ekrany
+        toast.pos_hint = {'center_x': 0.5, 'y': 0.1}
+        
+        toast.open()
+        Clock.schedule_once(toast.dismiss, 1)
 
 class FormularzApp(App):
     def build(self):
