@@ -41,6 +41,12 @@ jobs:
       shell: cmd
       run: pyinstaller --name=ContractGenerator --onefile --windowed --add-data "src/formularz.kv;." --hidden-import win32timezone --hidden-import kivy --hidden-import kivy.deps.sdl2 --hidden-import kivy.deps.glew --hidden-import kivy.deps.angle --hidden-import kivy.factory_registers --hidden-import kivy.graphics --hidden-import kivy.core.window --hidden-import kivy.core.text --hidden-import kivy.core.image --hidden-import docxtpl --hidden-import kivy.uix.checkbox --hidden-import kivy.uix.textinput --hidden-import kivy.uix.boxlayout --hidden-import kivy.uix.gridlayout --hidden-import kivy.uix.label --hidden-import kivy.uix.button src/main.py
 
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: ContractGenerator
+        path: dist/ContractGenerator.exe
+
     - name: Create Release
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
