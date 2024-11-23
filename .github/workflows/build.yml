@@ -39,21 +39,23 @@ jobs:
       env:
         CI: 1
         KIVY_NO_ARGS: 1
-        KIVY_GL_BACKEND: mock
-        PYTHONPATH: ${{ github.workspace }}
+        KIVY_GL_BACKEND: angle_sdl2
       run: |
-        pyinstaller --name MagicContracts --windowed --icon=assets/icon.ico --add-data "src/formularz.kv;." --add-data "assets;assets/" --hidden-import="pkg_resources.py2_warn" src/main.py
+        python -m PyInstaller --name MagicContracts --noconsole --icon=assets/icon.ico --add-data "src/formularz.kv;." --add-data "assets;assets/" src/main.py
+
+    - name: List dist directory
+      run: dir dist
 
     - name: Upload Build Artifact
       uses: actions/upload-artifact@v3
       with:
         name: MagicContracts
-        path: dist/MagicContracts.exe
+        path: dist/MagicContracts/MagicContracts.exe
 
     - name: Create Release
       uses: softprops/action-gh-release@v1
       with:
-        files: dist/MagicContracts.exe
+        files: dist/MagicContracts/MagicContracts.exe
         tag_name: ${{ steps.tag_version.outputs.new_tag }}
         name: Release ${{ steps.tag_version.outputs.new_tag }}
         body: ${{ steps.tag_version.outputs.changelog }}
