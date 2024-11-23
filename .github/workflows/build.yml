@@ -40,13 +40,9 @@ jobs:
         KIVY_GL_BACKEND: 'angle_sdl2'
       shell: cmd
       run: pyinstaller --name=ContractGenerator --onefile --windowed --add-data "src/formularz.kv;." --hidden-import win32timezone --hidden-import kivy --hidden-import kivy.deps.sdl2 --hidden-import kivy.deps.glew --hidden-import kivy.deps.angle --hidden-import kivy.factory_registers --hidden-import kivy.graphics --hidden-import kivy.core.window --hidden-import kivy.core.text --hidden-import kivy.core.image --hidden-import docxtpl --hidden-import kivy.uix.checkbox --hidden-import kivy.uix.textinput --hidden-import kivy.uix.boxlayout --hidden-import kivy.uix.gridlayout --hidden-import kivy.uix.label --hidden-import kivy.uix.button src/main.py
-        
-    - name: Release
-      uses: softprops/action-gh-release@v1
-      with:
-        files: ./dist/ContractGenerator.exe
-        tag_name: v${{ steps.tag_version.outputs.new_tag }}
-        name: Release ${{ steps.tag_version.outputs.new_tag }}
-        body: Automatyczne wydanie z dnia ${{ steps.tag_version.outputs.new_tag }}
+
+    - name: Create Release
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        gh release create "v${{ steps.tag_version.outputs.new_tag }}" ./dist/ContractGenerator.exe --title "Release ${{ steps.tag_version.outputs.new_tag }}" --notes "Automatyczne wydanie z dnia ${{ steps.tag_version.outputs.new_tag }}"
