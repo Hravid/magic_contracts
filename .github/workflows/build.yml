@@ -10,7 +10,7 @@ jobs:
   build:
     runs-on: windows-latest
     permissions: write-all
-
+    
     steps:
     - uses: actions/checkout@v4
       with:
@@ -37,27 +37,28 @@ jobs:
     
     - name: Build EXE
       env:
-        CI: 1
-        KIVY_NO_ARGS: 1
-        KIVY_GL_BACKEND: angle_sdl2
-      run: |
-        python -m PyInstaller --name MagicContracts --noconsole --icon=assets/icon.ico --add-data "src/formularz.kv;." --add-data "assets;assets/" --add-binary "C:/hostedtoolcache/windows/Python/3.12.7/x64/python312.dll;." src/main.py
-
-    - name: List dist directory
-      run: dir dist
-
-    - name: Upload Build Artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: MagicContracts
-        path: dist/MagicContracts/MagicContracts.exe
-
+        KIVY_GL_BACKEND: 'angle_sdl2'
+      shell: cmd
+      run: pyinstaller --name=ContractGenerator --onefile --windowed --add-data "src/formularz.kv;." --add-data "templates;templates" --hidden-import win32timezone --hidden-import kivy --hidden-import kivy.deps.sdl2 --hidden-import kivy.deps.glew --hidden-import kivy.deps.angle --hidden-import kivy.factory_registers --hidden-import kivy.graphics --hidden-import kivy.core.window --hidden-import kivy.core.text --hidden-import kivy.core.image --hidden-import docxtpl --hidden-import kivy.uix.checkbox --hidden-import kivy.uix.textinput --hidden-import kivy.uix.boxlayout --hidden-import kivy.uix.gridlayout --hidden-import kivy.uix.label --hidden-import kivy.uix.button src/main.py
+        
     - name: Create Release
-      uses: softprops/action-gh-release@v1
-      with:
-        files: dist/MagicContracts/MagicContracts.exe
-        tag_name: ${{ steps.tag_version.outputs.new_tag }}
-        name: Release ${{ steps.tag_version.outputs.new_tag }}
-        body: ${{ steps.tag_version.outputs.changelog }}
+      id: create_release
+      uses: actions/create-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ steps.tag_version.outputs.new_tag }}
+        release_name: Release ${{ steps.tag_version.outputs.new_tag }}
+        body: ${{ steps.tag_version.outputs.changelog }}
+        draft: false
+        prerelease: false
+        
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./dist/ContractGenerator.exe
+        asset_name: ContractGenerator.exe
+        asset_content_type: application/vnd.microsoft.portable-executable
