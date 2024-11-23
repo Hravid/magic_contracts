@@ -34,9 +34,13 @@ jobs:
           --windowed `
           --add-data "assets;assets" `
           --add-data "src/formularz.kv;." `
-          --hidden-import "win32timezone" `
-          --collect-all "kivy" `
-          src/main.py
+          --hidden-import win32timezone `
+          --hidden-import kivy `
+          --hidden-import kivy.deps.sdl2 `
+          --hidden-import kivy.deps.glew `
+          --hidden-import kivy.deps.angle `
+          --hidden-import kivy.factory_registers `
+          --hidden-import kivy.graphics
     
     - name: Upload artifact
       uses: actions/upload-artifact@v4
