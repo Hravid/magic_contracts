@@ -24,23 +24,13 @@ jobs:
         pip install kivy
         pip install kivy_deps.sdl2 kivy_deps.glew kivy_deps.angle
         pip install pyinstaller
+        pip install python-docx docxtpl
     
     - name: Build EXE
       env:
         KIVY_GL_BACKEND: 'angle_sdl2'
-      run: |
-        pyinstaller --name=ContractGenerator `
-          --onefile `
-          --windowed `
-          --add-data "assets;assets" `
-          --add-data "src/formularz.kv;." `
-          --hidden-import win32timezone `
-          --hidden-import kivy `
-          --hidden-import kivy.deps.sdl2 `
-          --hidden-import kivy.deps.glew `
-          --hidden-import kivy.deps.angle `
-          --hidden-import kivy.factory_registers `
-          --hidden-import kivy.graphics
+      shell: cmd
+      run: pyinstaller --name=ContractGenerator --onefile --windowed --add-data "assets;assets" --add-data "src/formularz.kv;." --hidden-import win32timezone --hidden-import kivy --hidden-import kivy.deps.sdl2 --hidden-import kivy.deps.glew --hidden-import kivy.deps.angle --hidden-import kivy.factory_registers --hidden-import kivy.graphics --hidden-import kivy.core.window --hidden-import kivy.core.text --hidden-import kivy.core.image --hidden-import docxtpl src/main.py
     
     - name: Upload artifact
       uses: actions/upload-artifact@v4
