@@ -44,6 +44,12 @@ jobs:
       run: |
         pyinstaller --name MagicContracts --windowed --icon=assets/icon.ico --add-data "src/formularz.kv;." --add-data "assets;assets/" --hidden-import="pkg_resources.py2_warn" src/main.py
 
+    - name: Upload Build Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: MagicContracts
+        path: dist/MagicContracts.exe
+
     - name: Create Release
       uses: softprops/action-gh-release@v1
       with:
