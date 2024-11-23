@@ -23,7 +23,7 @@ jobs:
     
     - name: Bump version and push tag
       id: tag_version
-      uses: mathieudutour/github-tag-action@v6.1
+      uses: mathieudutour/github-tag-action@v7.0.0
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         
@@ -41,19 +41,19 @@ jobs:
         KIVY_NO_ARGS: 1
         KIVY_GL_BACKEND: angle_sdl2
       run: |
-        python -m PyInstaller --name MagicContracts --noconsole --icon=assets/icon.ico --add-data "src/formularz.kv;." --add-data "assets;assets/" src/main.py
+        python -m PyInstaller --name MagicContracts --noconsole --icon=assets/icon.ico --add-data "src/formularz.kv;." --add-data "assets;assets/" --add-binary "C:/hostedtoolcache/windows/Python/3.12.7/x64/python312.dll;." src/main.py
 
     - name: List dist directory
       run: dir dist
 
     - name: Upload Build Artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: MagicContracts
         path: dist/MagicContracts/MagicContracts.exe
 
     - name: Create Release
-      uses: softprops/action-gh-release@v1
+      uses: softprops/action-gh-release@v2
       with:
         files: dist/MagicContracts/MagicContracts.exe
         tag_name: ${{ steps.tag_version.outputs.new_tag }}
