@@ -23,7 +23,7 @@ jobs:
     
     - name: Bump version and push tag
       id: tag_version
-      uses: mathieudutour/github-tag-action@v7.0.0
+      uses: mathieudutour/github-tag-action@v6.1
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         
@@ -53,7 +53,7 @@ jobs:
         path: dist/MagicContracts/MagicContracts.exe
 
     - name: Create Release
-      uses: softprops/action-gh-release@v2
+      uses: softprops/action-gh-release@v1
       with:
         files: dist/MagicContracts/MagicContracts.exe
         tag_name: ${{ steps.tag_version.outputs.new_tag }}
