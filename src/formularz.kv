@@ -11,16 +11,111 @@
             pos: self.pos
             size: self.size
 
-    Label:
-        text: 'Generator Umów'
-        font_size: '24sp'
+    # Dodajemy BoxLayout dla checkboxów
+    BoxLayout:
         size_hint_y: None
-        height: '50dp'
-        color: 0.2, 0.2, 0.2, 1
-        bold: True
+        height: '80dp'
+        spacing: '20dp'
+        padding: ['20dp', '0dp']
+        orientation: 'vertical'
+        
+        # Pierwszy rząd - typ umowy i Luxmed
+        BoxLayout:
+            spacing: '20dp'
+            BoxLayout:
+                size_hint_x: None
+                width: self.minimum_width
+                spacing: '5dp'
+                CheckBox:
+                    id: czas_nieokreslony
+                    group: 'typ_umowy'
+                    size_hint_x: None
+                    width: '30dp'
+                    active: True
+                    on_active: 
+                        if self.active: root.typ_umowy = 'czas_nieokreslony'
+                        root.ustaw_date_zakonczenia(self.active)
+                Label:
+                    text: 'Umowa na czas nieokreślony'
+                    size_hint_x: None
+                    width: self.texture_size[0]
+                    color: 0.2, 0.2, 0.2, 1
+                    font_size: '16sp'
+            
+            BoxLayout:
+                size_hint_x: None
+                width: self.minimum_width
+                spacing: '5dp'
+                CheckBox:
+                    id: czas_okreslony
+                    group: 'typ_umowy'
+                    size_hint_x: None
+                    width: '30dp'
+                    on_active: if self.active: root.typ_umowy = 'czas_okreslony'
+                Label:
+                    text: 'Umowa na czas określony'
+                    size_hint_x: None
+                    width: self.texture_size[0]
+                    color: 0.2, 0.2, 0.2, 1
+                    font_size: '16sp'
+
+            BoxLayout:
+                size_hint_x: None
+                width: self.minimum_width
+                spacing: '5dp'
+                CheckBox:
+                    id: klient_luxmed
+                    size_hint_x: None
+                    width: '30dp'
+                    on_active: root.klient_luxmed = self.active
+                Label:
+                    text: 'Klient Luxmed'
+                    size_hint_x: None
+                    width: self.texture_size[0]
+                    color: 0.2, 0.2, 0.2, 1
+                    font_size: '16sp'
+
+        # Drugi rząd - typ pokoju
+        BoxLayout:
+            spacing: '20dp'
+            BoxLayout:
+                size_hint_x: None
+                width: self.minimum_width
+                spacing: '5dp'
+                CheckBox:
+                    id: pokoj_jednoosobowy
+                    group: 'typ_pokoju'
+                    size_hint_x: None
+                    width: '30dp'
+                    on_active: if self.active: root.typ_pokoju = 'jednoosobowy'
+                Label:
+                    text: 'Pokój jednoosobowy'
+                    size_hint_x: None
+                    width: self.texture_size[0]
+                    color: 0.2, 0.2, 0.2, 1
+                    font_size: '16sp'
+            
+            BoxLayout:
+                size_hint_x: None
+                width: self.minimum_width
+                spacing: '5dp'
+                CheckBox:
+                    id: pokoj_dwuosobowy
+                    group: 'typ_pokoju'
+                    size_hint_x: None
+                    width: '30dp'
+                    active: True
+                    on_active: if self.active: root.typ_pokoju = 'dwuosobowy'
+                Label:
+                    text: 'Pokój dwuosobowy'
+                    size_hint_x: None
+                    width: self.texture_size[0]
+                    color: 0.2, 0.2, 0.2, 1
+                    font_size: '16sp'
 
     ScrollView:
-        size_hint_y: 0.9
+        size_hint_y: None
+        height: root.height - dp(280)
         do_scroll_x: False
         
         GridLayout:
@@ -71,6 +166,62 @@
                 padding: ['10dp', (self.height - self.line_height) / 2]
 
             Label:
+                text: 'Adres:'
+                size_hint_y: None
+                height: '35dp'
+                color: 0.2, 0.2, 0.2, 1
+                font_size: '16sp'
+            TextInput:
+                id: ulica
+                multiline: False
+                size_hint_y: None
+                height: '40dp'
+                font_size: '16sp'
+                padding: ['10dp', (self.height - self.line_height) / 2]
+                
+            Label:
+                text: 'Kod Pocztowy:'
+                size_hint_y: None
+                height: '35dp'
+                color: 0.2, 0.2, 0.2, 1
+                font_size: '16sp'
+            TextInput:
+                id: kod_pocztowy
+                multiline: False
+                size_hint_y: None
+                height: '40dp'
+                font_size: '16sp'
+                padding: ['10dp', (self.height - self.line_height) / 2]
+
+            Label:
+                text: 'Telefon:'
+                size_hint_y: None
+                height: '35dp'
+                color: 0.2, 0.2, 0.2, 1
+                font_size: '16sp'
+            TextInput:
+                id: telefon_zleceniodawcy
+                multiline: False
+                size_hint_y: None
+                height: '40dp'
+                font_size: '16sp'
+                padding: ['10dp', (self.height - self.line_height) / 2]
+
+            Label:
+                text: 'Email:'
+                size_hint_y: None
+                height: '35dp'
+                color: 0.2, 0.2, 0.2, 1
+                font_size: '16sp'
+            TextInput:
+                id: email_zleceniodawcy
+                multiline: False
+                size_hint_y: None
+                height: '40dp'
+                font_size: '16sp'
+                padding: ['10dp', (self.height - self.line_height) / 2]
+
+            Label:
                 text: 'Numer konta:'
                 size_hint_y: None
                 height: '35dp'
@@ -84,15 +235,69 @@
                 font_size: '16sp'
                 padding: ['10dp', (self.height - self.line_height) / 2]
                 
-            # Separator
+            # Po danych klienta, przed danymi pacjenta
+            Label:
+                text: 'Firma:'
+                size_hint_y: None
+                height: '40dp'
+                bold: True
+                color: 0.2, 0.2, 0.2, 1
+                font_size: '16sp'
+            Label:
+                size_hint_y: None
+                height: '40dp'
+
+            Label:
+                text: 'Aneks:'
+                size_hint_y: None
+                height: '35dp'
+                color: 0.2, 0.2, 0.2, 1
+                font_size: '16sp'
+            TextInput:
+                id: aneks
+                multiline: False
+                size_hint_y: None
+                height: '40dp'
+                font_size: '16sp'
+                padding: ['10dp', (self.height - self.line_height) / 2]
+
+            Label:
+                text: 'Pełnomocnik:'
+                size_hint_y: None
+                height: '35dp'
+                color: 0.2, 0.2, 0.2, 1
+                font_size: '16sp'
+            TextInput:
+                id: pelnomocnik
+                multiline: False
+                size_hint_y: None
+                height: '40dp'
+                font_size: '16sp'
+                padding: ['10dp', (self.height - self.line_height) / 2]
+
+            Label:
+                text: 'Pełnomocnik z dnia:'
+                size_hint_y: None
+                height: '35dp'
+                color: 0.2, 0.2, 0.2, 1
+                font_size: '16sp'
+            TextInput:
+                id: pelnomocnik_z_dnia
+                multiline: False
+                size_hint_y: None
+                height: '40dp'
+                font_size: '16sp'
+                padding: ['10dp', (self.height - self.line_height) / 2]
+
+            # Separator przed danymi pacjenta
             Widget:
                 size_hint_y: None
                 height: '15dp'
             Widget:
                 size_hint_y: None
                 height: '15dp'
-                
-            # Dane Pacjenta
+
+            # Następnie dane pacjenta...
             Label:
                 text: 'Dane Pacjenta:'
                 size_hint_y: None
@@ -132,15 +337,6 @@
                 font_size: '16sp'
                 padding: ['10dp', (self.height - self.line_height) / 2]
                 
-            # Separator
-            Widget:
-                size_hint_y: None
-                height: '15dp'
-            Widget:
-                size_hint_y: None
-                height: '15dp'
-                
-            # Pozostałe dane
             Label:
                 text: 'Adres:'
                 size_hint_y: None
@@ -148,7 +344,7 @@
                 color: 0.2, 0.2, 0.2, 1
                 font_size: '16sp'
             TextInput:
-                id: ulica
+                id: adres_pacjenta
                 multiline: False
                 size_hint_y: None
                 height: '40dp'
@@ -185,7 +381,7 @@
                 bold: True
                 color: 0.2, 0.2, 0.2, 1
                 font_size: '16sp'
-            Label:
+            Widget:
                 size_hint_y: None
                 height: '40dp'
 
@@ -218,33 +414,125 @@
                 font_size: '16sp'
                 padding: ['10dp', (self.height - self.line_height) / 2]
                 text: root.dzisiejsza_data
+                on_text: root.update_cena()
+
+            Label:
+                text: 'Data zakończenia umowy:'
+                size_hint_y: None
+                height: '35dp'
+                color: 0.2, 0.2, 0.2, 1
+                font_size: '16sp'
+            TextInput:
+                id: data_zakonczenia_umowy
+                multiline: False
+                size_hint_y: None
+                height: '40dp'
+                font_size: '16sp'
+                padding: ['10dp', (self.height - self.line_height) / 2]
+                on_text: root.update_cena()
+
+            # Separator przed ceną
+            Widget:
+                size_hint_y: None
+                height: '15dp'
+            Widget:
+                size_hint_y: None
+                height: '15dp'
+
+            # Sekcja ceny
+            Label:
+                text: 'Cena:'
+                size_hint_y: None
+                height: '40dp'
+                bold: True
+                color: 0.2, 0.2, 0.2, 1
+                font_size: '16sp'
+            Label:
+                size_hint_y: None
+                height: '40dp'
+
+            Label:
+                text: 'Kwota:'
+                size_hint_y: None
+                height: '35dp'
+                color: 0.2, 0.2, 0.2, 1
+                font_size: '16sp'
+            TextInput:
+                id: cena
+                multiline: False
+                readonly: True
+                size_hint_y: None
+                height: '40dp'
+                font_size: '16sp'
+                padding: ['10dp', (self.height - self.line_height) / 2]
+                background_color: 0.95, 0.95, 0.95, 1
+                text: root.oblicz_cene()
+
+            Widget:
+                size_hint_y: None
+                height: '5dp'
 
     # Separator przed przyciskiem
     Widget:
         size_hint_y: None
-        height: '30dp'
+        height: '10dp'
 
     # Przycisk
     Button:
         text: 'Generuj dokumenty'
-        size_hint: (None, None)
-        size: '200dp', '50dp'
-        pos_hint: {'center_x': 0.5}
-        background_color: 0.2, 0.6, 1, 1
-        font_size: '18sp'
-        on_release: root.generuj_dokumenty(self)
-        canvas.before:
-            Color:
-                rgba: 0.2, 0.6, 1, 1
-            RoundedRectangle:
-                pos: self.pos
-                size: self.size
-                radius: [10,]
+        size_hint_y: None
+        height: '40dp'
+        background_color: 0.2, 0.4, 0.8, 1
+        on_release: root.generuj_dokumenty()
 
     # Miejsce na komunikaty
     Label:
         id: message_label
         size_hint_y: None
-        height: '40dp'
+        height: '30dp'
         color: 0.2, 0.2, 0.2, 1
         font_size: '16sp'
+
+    # Dodaj na końcu formularza, przed message_label
+    BoxLayout:
+        size_hint_y: None
+        height: '35dp'
+        spacing: '10dp'
+        
+        Button:
+            text: 'Wybierz szablon'
+            size_hint_x: None
+            width: '150dp'
+            on_release: root.wybierz_szablon(self)
+        
+        Label:
+            id: template_label
+            text: 'Nie wybrano szablonu'
+            halign: 'left'
+            text_size: self.size
+            valign: 'middle'
+            color: 0, 0, 0, 1
+            bold: True
+
+    FloatLayout:
+        size_hint_y: None
+        height: 0
+        Button:
+            size_hint: None, None
+            size: '40dp', '40dp'
+            pos_hint: {'right': 0.98, 'y': 2}
+            background_color: 0, 0, 0, 0
+            on_release: root.pokaz_instrukcje()
+            
+            canvas.before:
+                Color:
+                    rgba: 0.3, 0.3, 0.3, 1
+                Ellipse:
+                    pos: self.pos
+                    size: self.size
+            
+            Label:
+                center: self.parent.center
+                text: '?'
+                font_size: '20sp'
+                color: 1, 1, 1, 1

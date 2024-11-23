@@ -1,4 +1,4 @@
-name: Build EXE
+name: Build Magic Contracts
 
 on:
   push:
@@ -9,15 +9,24 @@ on:
 jobs:
   build:
     runs-on: windows-latest
-    
+    permissions: write-all
+
     steps:
     - uses: actions/checkout@v4
+      with:
+        fetch-depth: '0'
     
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
         python-version: '3.12'
     
+    - name: Bump version and push tag
+      id: tag_version
+      uses: mathieudutour/github-tag-action@v6.1
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
@@ -27,13 +36,15 @@ jobs:
         pip install python-docx docxtpl
     
     - name: Build EXE
-      env:
-        KIVY_GL_BACKEND: 'angle_sdl2'
-      shell: cmd
-      run: pyinstaller --name=ContractGenerator --onefile --windowed --add-data "assets;assets" --add-data "src/formularz.kv;." --add-data "src/*.kv;." --hidden-import win32timezone --hidden-import kivy --hidden-import kivy.deps.sdl2 --hidden-import kivy.deps.glew --hidden-import kivy.deps.angle --hidden-import kivy.factory_registers --hidden-import kivy.graphics --hidden-import kivy.core.window --hidden-import kivy.core.text --hidden-import kivy.core.image --hidden-import docxtpl --hidden-import kivy.uix.checkbox --hidden-import kivy.uix.textinput --hidden-import kivy.uix.boxlayout --hidden-import kivy.uix.gridlayout --hidden-import kivy.uix.label --hidden-import kivy.uix.button src/main.py
+      run: |
+        pyinstaller --name MagicContracts --windowed --icon=assets/icon.ico --add-data "src/formularz.kv;." --add-data "assets;assets/" src/main.py
     
-    - name: Upload artifact
-      uses: actions/upload-artifact@v4
+    - name: Create Release
+      uses: softprops/action-gh-release@v1
       with:
-        name: ContractGenerator
-        path: dist/ContractGenerator.exe
+        files: dist/MagicContracts.exe
+        tag_name: ${{ steps.tag_version.outputs.new_tag }}
+        name: Release ${{ steps.tag_version.outputs.new_tag }}
+        body: ${{ steps.tag_version.outputs.changelog }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
