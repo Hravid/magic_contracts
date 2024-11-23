@@ -39,8 +39,10 @@ jobs:
       env:
         CI: 1
         KIVY_NO_ARGS: 1
+        KIVY_GL_BACKEND: mock
+        PYTHONPATH: ${{ github.workspace }}
       run: |
-        pyinstaller --name MagicContracts --windowed --icon=assets/icon.ico --add-data "src/formularz.kv;." --add-data "assets;assets/" src/main.py
+        pyinstaller --name MagicContracts --windowed --icon=assets/icon.ico --add-data "src/formularz.kv;." --add-data "assets;assets/" --hidden-import="pkg_resources.py2_warn" src/main.py
 
     - name: Create Release
       uses: softprops/action-gh-release@v1
